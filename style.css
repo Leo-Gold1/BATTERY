@@ -1,0 +1,119 @@
+/* style.css */
+body {
+  background-color: #f8f8f8;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 50px auto;
+}
+
+/* Card style */
+.card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Headings */
+h1, h3 {
+  color: #c62828;
+  font-weight: 600;
+}
+
+/* Input fields */
+input.form-control, select.form-select {
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input.form-control:focus, select.form-select:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 5px rgba(198,40,40,0.3);
+  outline: none;
+}
+
+/* Buttons */
+button.btn-primary {
+  background-color: #c62828;
+  border: none;
+  padding: 12px 25px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #e53935;
+  transform: translateY(-2px);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+table th {
+  background-color: #c62828;
+  color: white;
+  font-weight: 500;
+  text-align: center;
+  padding: 12px;
+}
+
+table td {
+  padding: 12px;
+  text-align: center;
+}
+
+table tr:nth-child(even) td {
+  background-color: #fdf2f2;
+}
+
+/* Warranty Badge */
+.badge-active {
+  background-color: #43a047;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+.badge-expired {
+  background-color: #e53935;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+/* Responsive Table */
+@media(max-width:576px){
+  table,thead,tbody,tr,th,td{ display:block;}
+  thead tr{ display:none;}
+  tbody td{
+    display:flex;
+    justify-content:space-between;
+    padding:12px;
+    border-bottom:1px solid #eee;
+  }
+  tbody td::before{
+    content: attr(data-label);
+    font-weight:bold;
+    color:#c62828;
+  }
+}
