@@ -1,3 +1,3 @@
-const LOGIN_USER = "BATTERY";
-const LOGIN_PASS = "BT123456789";
-const DELETE_PASS = "BT123456789";
+const LOGIN_USER = "Viresh";
+const LOGIN_PASS = "BT@12345";
+const DELETE_PASS = "BT@12345";
