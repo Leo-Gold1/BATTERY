@@ -7,10 +7,8 @@
 </head>
 <body>
 
-<!-- Toast Popup -->
 <div id="toast" class="toast"></div>
 
-<!-- Login Card -->
 <div class="card" id="loginCard">
   <h2>🔋 Battery Manager</h2>
   <input id="username" placeholder="Username">
@@ -19,140 +17,125 @@
   <p id="error"></p>
 </div>
 
-<!-- Dashboard -->
-<div class="hidden fadeIn" id="dashboard">
+<div class="hidden" id="dashboard">
 
-  <header>
-    <h1>Battery Dashboard</h1>
-    <button class="logoutBtn" onclick="logout()">Logout</button>
-  </header>
+<header>
+<h1>Battery Dashboard</h1>
+<button class="logoutBtn" onclick="logout()">Logout</button>
+</header>
 
-  <div class="form-container">
-    <form id="batteryForm">
+<div class="form-container">
+<form id="batteryForm">
+<input name="customer_name" placeholder="Customer Name" required>
+<input name="phone_number" placeholder="Phone Number" required>
+<input name="reg_number" placeholder="Registration Number" required>
+<input name="battery_company" placeholder="Battery Company" required>
+<input type="date" name="battery_sent_date">
+<input name="dealer_name" placeholder="Dealer Name">
+<input name="frame_number" placeholder="Frame Number">
+<input name="engine_number" placeholder="Engine Number">
+<button type="submit">Add Battery</button>
+</form>
+</div>
 
-      <input name="customer_name" placeholder="Customer Name" required>
-      <input name="phone_number" placeholder="Phone Number" required>
-      <input name="reg_number" placeholder="Registration Number" required>
-      <input name="battery_company" placeholder="Battery Company" required>
-
-      <input type="date" name="battery_sent_date">
-      <input name="dealer_name" placeholder="Dealer Name">
-      <input name="frame_number" placeholder="Frame Number">
-      <input name="engine_number" placeholder="Engine Number">
-
-      <button type="submit">Add Battery</button>
-
-    </form>
-  </div>
-
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Reg</th>
-          <th>Company</th>
-          <th>Sent</th>
-          <th>Dealer</th>
-          <th>Frame</th>
-          <th>Engine</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Reg</th>
+<th>Company</th>
+<th>Sent</th>
+<th>Dealer</th>
+<th>Frame</th>
+<th>Engine</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
 
 </div>
 
 <script src="/config.js"></script>
 
 <script>
-function showToast(message, success=true){
-  const toast = document.getElementById("toast");
-  toast.innerText = message;
-  toast.style.background = success ? "#28a745" : "#dc3545";
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"),3000);
+function showToast(msg, success=true){
+  const t=document.getElementById("toast");
+  t.innerText=msg;
+  t.style.background=success?"#28a745":"#dc3545";
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3000);
 }
 
 function login(){
   if(
-    document.getElementById("username").value === LOGIN_USER &&
-    document.getElementById("password").value === LOGIN_PASS
+    username.value===LOGIN_USER &&
+    password.value===LOGIN_PASS
   ){
-    document.getElementById("loginCard").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
+    loginCard.classList.add("hidden");
+    dashboard.classList.remove("hidden");
     loadBatteries();
-  } else {
-    document.getElementById("error").innerText = "Wrong credentials";
+  }else{
+    error.innerText="Wrong credentials";
   }
 }
 
-function logout(){
-  location.reload();
-}
+function logout(){ location.reload(); }
 
-document.getElementById("batteryForm").addEventListener("submit", async e=>{
+batteryForm.addEventListener("submit",async e=>{
   e.preventDefault();
-  const data = Object.fromEntries(new FormData(e.target).entries());
+  const data=Object.fromEntries(new FormData(e.target).entries());
 
-  const res = await fetch("/add-battery",{
+  const res=await fetch("/api/add-battery",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify(data)
   });
 
   if(res.ok){
-    showToast("Battery Added Successfully ✅");
+    showToast("Battery Added ✅");
     e.target.reset();
     loadBatteries();
-  }else{
-    showToast("Failed to add battery ❌",false);
   }
 });
 
 async function loadBatteries(){
-  const res = await fetch("/batteries");
-  const batteries = await res.json();
+  const res=await fetch("/api/batteries");
+  const batteries=await res.json();
 
-  const body = document.getElementById("tableBody");
-  body.innerHTML="";
-
+  tableBody.innerHTML="";
   batteries.forEach(b=>{
-    body.innerHTML+=`
-      <tr class="rowAnim">
-        <td>${b.customer_name}</td>
-        <td>${b.phone_number}</td>
-        <td>${b.reg_number}</td>
-        <td>${b.battery_company}</td>
-        <td>${b.battery_sent_date ? b.battery_sent_date.split("T")[0] : ""}</td>
-        <td>${b.dealer_name || ""}</td>
-        <td>${b.frame_number || ""}</td>
-        <td>${b.engine_number || ""}</td>
-        <td>
-          <button class="deleteBtn" onclick="deleteBattery(${b.id})">✖</button>
-        </td>
-      </tr>
-    `;
+    tableBody.innerHTML+=`
+    <tr>
+      <td>${b.customer_name}</td>
+      <td>${b.phone_number}</td>
+      <td>${b.reg_number}</td>
+      <td>${b.battery_company}</td>
+      <td>${b.battery_sent_date?b.battery_sent_date.split("T")[0]:""}</td>
+      <td>${b.dealer_name||""}</td>
+      <td>${b.frame_number||""}</td>
+      <td>${b.engine_number||""}</td>
+      <td>
+        <button onclick="deleteBattery(${b.id})">✖</button>
+      </td>
+    </tr>`;
   });
 }
 
 async function deleteBattery(id){
-  const pass = prompt("Enter delete password");
-  if(pass!==DELETE_PASS){
-    showToast("Wrong Password ❌",false);
-    return;
-  }
+  const pass=prompt("Enter delete password");
+  if(pass!==DELETE_PASS){ showToast("Wrong password",false); return; }
 
-  await fetch("/delete-battery/"+id,{
+  await fetch("/api/delete-battery/"+id,{
     method:"DELETE",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({password:pass})
   });
 
-  showToast("Battery Deleted 🗑");
+  showToast("Deleted");
   loadBatteries();
 }
 </script>
