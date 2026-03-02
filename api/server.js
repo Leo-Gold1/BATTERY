@@ -12,7 +12,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Create table safely
+// Create table
 (async () => {
   try {
     await pool.query(`
@@ -37,35 +37,29 @@ const pool = new Pool({
   }
 })();
 
-// Add Battery
+// Routes
 app.post("/api/add-battery", async (req, res) => {
-  try {
-    const b = req.body;
+  const b = req.body;
 
-    await pool.query(
-      `INSERT INTO batteries
-      (customer_name, phone_number, reg_number, battery_company, battery_sent_date, dealer_name, frame_number, engine_number)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
-      [
-        b.customer_name,
-        b.phone_number,
-        b.reg_number,
-        b.battery_company,
-        b.battery_sent_date || null,
-        b.dealer_name || null,
-        b.frame_number || null,
-        b.engine_number || null
-      ]
-    );
+  await pool.query(
+    `INSERT INTO batteries
+    (customer_name, phone_number, reg_number, battery_company, battery_sent_date, dealer_name, frame_number, engine_number)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+    [
+      b.customer_name,
+      b.phone_number,
+      b.reg_number,
+      b.battery_company,
+      b.battery_sent_date || null,
+      b.dealer_name || null,
+      b.frame_number || null,
+      b.engine_number || null
+    ]
+  );
 
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Insert failed" });
-  }
+  res.json({ success: true });
 });
 
-// Get All
 app.get("/api/batteries", async (req, res) => {
   const result = await pool.query(
     "SELECT * FROM batteries ORDER BY created_at DESC"
@@ -73,7 +67,6 @@ app.get("/api/batteries", async (req, res) => {
   res.json(result.rows);
 });
 
-// Delete
 app.delete("/api/delete-battery/:id", async (req, res) => {
   if (req.body.password !== process.env.DELETE_PASS) {
     return res.status(403).json({ error: "Wrong password" });
@@ -86,4 +79,20 @@ app.delete("/api/delete-battery/:id", async (req, res) => {
   res.json({ success: true });
 });
 
+
+// 🔥 LOCALHOST SUPPORT (ONLY FOR REPLIT / LOCAL)
+if (process.env.VERCEL !== "1") {
+  app.use(express.static("./"));
+
+  app.get("/", (req, res) => {
+    res.sendFile(require("path").join(__dirname, "../index.html"));
+  });
+
+  const PORT = 3000;
+  app.listen(PORT, () => {
+    console.log("Running locally on http://localhost:" + PORT);
+  });
+}
+
+// Export for Vercel
 module.exports = app;
