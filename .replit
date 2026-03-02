@@ -1,33 +1,37 @@
-entrypoint = "index.html"
-modules = ["web"]
+# Run command for Replit
+run = "npm run dev"
 
-[nix]
-channel = "stable-24_11"
-packages = ["static-web-server"]
+# Language
+language = "nodejs"
+modules = ["nodejs-20"]
 
-[deployment]
-publicDir = "/"
-deploymentTarget = "static"
+# Environment variables
+[env]
+PORT = "3000"
+MONGO_URI = "mongodb+srv://BATTERY:BT123456789@anikage.kcccomb.mongodb.net/batteryDB?retryWrites=true&w=majority"
+DELETE_PASS = "BT1234"
 
+# Workflows (optional, Replit UI run button)
 [workflows]
-runButton = "Serve static"
+runButton = "npm run dev"
 
 [[workflows.workflow]]
-name = "Serve static"
-mode = "parallel"
+name = "Install & Start"
+mode = "sequential"
+author = 33309924
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = """
-echo \"Serving HTML, open the Preview to see your output.
-To see changes you make, you can hit the refresh button in the preview, you do \u001B[1mnot\u001B[0m have to stop and run again.
-Console logs are available in the Preview devtools or your browser devtools.\" && static-web-server -w ./.config/static-web-server.toml > /dev/null 2>&1
-"""
-waitForPort = 80
+args = "npm install"
 
-[[ports]]
-localPort = 80
-externalPort = 80
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
 
+# Agent expert mode
 [agent]
 expertMode = true
+
+[[ports]]
+localPort = 3000
+externalPort = 80
