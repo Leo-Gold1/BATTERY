@@ -2,13 +2,14 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🔋Battery Management</title>
+<title>🔋 Battery Management</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
 <div id="toast" class="toast"></div>
 
+<!-- LOGIN -->
 <div class="card" id="loginCard">
   <h2>🔋 Battery Manager</h2>
   <input id="username" placeholder="Username">
@@ -17,8 +18,8 @@
   <p id="error"></p>
 </div>
 
+<!-- DASHBOARD -->
 <div class="hidden" id="dashboard">
-
 <header>
 <h1>Battery Dashboard</h1>
 <button class="logoutBtn" onclick="logout()">Logout</button>
@@ -42,6 +43,7 @@
 <table>
 <thead>
 <tr>
+<th>ID</th>
 <th>Name</th>
 <th>Phone</th>
 <th>Reg</th>
@@ -50,18 +52,49 @@
 <th>Dealer</th>
 <th>Frame</th>
 <th>Engine</th>
+<th>Warranty</th>
+<th>Reason</th>
 <th></th>
 </tr>
 </thead>
 <tbody id="tableBody"></tbody>
 </table>
 </div>
-
 </div>
 
-<script src="/config.js"></script>
+<!-- Assistant Button -->
+<button id="assistantBtn" class="assistant-btn hidden" onclick="openAssistant()">🔍</button>
+
+<!-- Assistant Modal -->
+<div id="assistantModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Search / Warranty</h3>
+
+    <input id="searchInput" placeholder="Search battery...">
+    <button onclick="searchBattery()">Search</button>
+
+    <hr>
+
+    <input id="warrantyId" placeholder="Battery ID">
+    <button onclick="warrantyOK()">Warranty OK</button>
+    <button onclick="warrantyDeny()">Warranty Deny</button>
+
+    <br><br>
+    <button onclick="closeAssistant()">Close</button>
+  </div>
+</div>
 
 <script>
+
+const API_BASE = "/api";
+const LOGIN_USER = "Viresh";
+const LOGIN_PASS = "V@1234";
+
+const loginCard = document.getElementById("loginCard");
+const dashboard = document.getElementById("dashboard");
+const assistantBtn = document.getElementById("assistantBtn");
+const tableBody = document.getElementById("tableBody");
+
 function showToast(msg, success=true){
   const t=document.getElementById("toast");
   t.innerText=msg;
@@ -71,45 +104,56 @@ function showToast(msg, success=true){
 }
 
 function login(){
-  if(
-    username.value===LOGIN_USER &&
-    password.value===LOGIN_PASS
-  ){
+  const u=document.getElementById("username").value;
+  const p=document.getElementById("password").value;
+
+  if(u===LOGIN_USER && p===LOGIN_PASS){
     loginCard.classList.add("hidden");
     dashboard.classList.remove("hidden");
+    assistantBtn.classList.remove("hidden");
     loadBatteries();
   }else{
-    error.innerText="Wrong credentials";
+    document.getElementById("error").innerText="Wrong Username or Password!";
   }
 }
 
-function logout(){ location.reload(); }
+function logout(){
+  location.reload();
+}
 
-batteryForm.addEventListener("submit",async e=>{
+document.getElementById("batteryForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const data=Object.fromEntries(new FormData(e.target).entries());
 
-  const res=await fetch("/api/add-battery",{
+  const res=await fetch(API_BASE+"/add-battery",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify(data)
   });
 
+  const result=await res.json();
+
   if(res.ok){
     showToast("Battery Added ✅");
     e.target.reset();
     loadBatteries();
+  }else{
+    showToast(result.error,false);
   }
 });
 
 async function loadBatteries(){
-  const res=await fetch("/api/batteries");
-  const batteries=await res.json();
+  const res=await fetch(API_BASE+"/batteries");
+  const data=await res.json();
+  renderTable(data);
+}
 
+function renderTable(list){
   tableBody.innerHTML="";
-  batteries.forEach(b=>{
+  list.forEach(b=>{
     tableBody.innerHTML+=`
     <tr>
+      <td>${b.id}</td>
       <td>${b.customer_name}</td>
       <td>${b.phone_number}</td>
       <td>${b.reg_number}</td>
@@ -118,27 +162,83 @@ async function loadBatteries(){
       <td>${b.dealer_name||""}</td>
       <td>${b.frame_number||""}</td>
       <td>${b.engine_number||""}</td>
-      <td>
-        <button onclick="deleteBattery(${b.id})">✖</button>
-      </td>
+      <td>${b.warranty_status}</td>
+      <td>${b.warranty_reason||""}</td>
+      <td><button onclick="deleteBattery(${b.id})">✖</button></td>
     </tr>`;
   });
 }
 
 async function deleteBattery(id){
   const pass=prompt("Enter delete password");
-  if(pass!==DELETE_PASS){ showToast("Wrong password",false); return; }
+  if(!pass) return;
 
-  await fetch("/api/delete-battery/"+id,{
+  const res=await fetch(API_BASE+"/delete-battery/"+id,{
     method:"DELETE",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({password:pass})
   });
 
-  showToast("Deleted");
+  const result=await res.json();
+
+  if(res.ok){
+    showToast("Deleted ✅");
+    loadBatteries();
+  }else{
+    showToast(result.error,false);
+  }
+}
+
+/* Assistant */
+
+function openAssistant(){
+  document.getElementById("assistantModal").classList.remove("hidden");
+}
+
+function closeAssistant(){
+  document.getElementById("assistantModal").classList.add("hidden");
+}
+
+async function searchBattery(){
+  const q=document.getElementById("searchInput").value;
+  if(!q){ showToast("Enter search value",false); return; }
+
+  const res=await fetch(API_BASE+"/search?q="+q);
+  const data=await res.json();
+  renderTable(data);
+}
+
+async function warrantyOK(){
+  const id=document.getElementById("warrantyId").value;
+  if(!id){ showToast("Enter Battery ID",false); return; }
+
+  await fetch(API_BASE+"/update-warranty/"+id,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({status:"Approved"})
+  });
+
+  showToast("Warranty Approved ✅");
   loadBatteries();
 }
-</script>
 
+async function warrantyDeny(){
+  const id=document.getElementById("warrantyId").value;
+  if(!id){ showToast("Enter Battery ID",false); return; }
+
+  const reason=prompt("Enter reason for denial");
+  if(!reason){ showToast("Reason required ❌",false); return; }
+
+  await fetch(API_BASE+"/update-warranty/"+id,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({status:"Denied",reason})
+  });
+
+  showToast("Warranty Denied ❌");
+  loadBatteries();
+}
+
+</script>
 </body>
 </html>

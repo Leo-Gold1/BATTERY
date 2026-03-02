@@ -9,7 +9,7 @@ modules = ["nodejs-20"]
 [env]
 PORT = "3000"
 MONGO_URI = "mongodb+srv://BATTERY:BT123456789@anikage.kcccomb.mongodb.net/batteryDB?retryWrites=true&w=majority"
-DELETE_PASS = "BT1234"
+DELETE_PASS = "BT@12345"
 
 # Workflows (optional, Replit UI run button)
 [workflows]
