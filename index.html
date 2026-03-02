@@ -1,74 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Battery Manager</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<script src="config.js"></script>
-<script src="script.js"></script>
 </head>
 <body>
-  <div class="app-container">
 
-    <!-- Login -->
-    <div id="loginDiv" class="login-card">
-      <h2 class="text-center mb-4">Login</h2>
-      <input id="username" placeholder="Username" class="form-control mb-3">
-      <input id="password" type="password" placeholder="Password" class="form-control mb-3">
-      <button id="loginBtn" class="btn btn-outline-light w-100">Login</button>
-      <div id="loginError" class="text-danger mt-2" style="display:none;">ID or Password is wrong 😅</div>
-    </div>
+<div class="card" id="loginCard">
+  <h2>Battery Manager</h2>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="error"></p>
+</div>
 
-    <!-- Manager Dashboard -->
-    <div id="managerDiv" class="manager-container" style="display:none;">
-      <h1 class="text-center mb-5">Battery Manager</h1>
+<div class="hidden" id="dashboard">
+  <h1>Dashboard</h1>
 
-      <!-- Add Battery Form -->
-      <div class="card mb-4 transparent-card">
-        <h3 class="mb-3">Add New Battery</h3>
-        <form id="batteryForm">
-          <div class="row g-3">
-            <div class="col-md-6"><input class="form-control" name="biker_name" placeholder="Biker Name" required></div>
-            <div class="col-md-6"><input class="form-control" name="phone_number" placeholder="Phone Number" required></div>
-            <div class="col-md-6"><input class="form-control" name="reg_number" placeholder="Registration Number" required></div>
-            <div class="col-md-6"><input class="form-control" name="battery_company" placeholder="Battery Company" required></div>
-            <div class="col-md-6">
-              <select class="form-select" name="battery_type">
-                <option>Chargeable</option>
-                <option>Non-chargeable</option>
-              </select>
-            </div>
-            <div class="col-md-6"><input class="form-control" name="dealer_name" placeholder="Dealer Name"></div>
-            <div class="col-md-6"><input class="form-control" type="date" name="warranty_start_date"></div>
-            <div class="col-md-6"><input class="form-control" name="frame_number" placeholder="Frame Number"></div>
-            <div class="col-md-6"><input class="form-control" name="engine_number" placeholder="Engine Number"></div>
-          </div>
-          <button class="btn btn-outline-light mt-4 w-100" type="submit">Add Battery</button>
-        </form>
-      </div>
+  <form id="batteryForm">
+    <input name="biker_name" placeholder="Name" required>
+    <input name="phone_number" placeholder="Phone" required>
+    <input name="reg_number" placeholder="Reg No" required>
+    <input name="battery_company" placeholder="Company" required>
+    <select name="battery_type">
+      <option>Chargeable</option>
+      <option>Non-chargeable</option>
+    </select>
+    <button type="submit">Add Battery</button>
+  </form>
 
-      <!-- Search -->
-      <input type="text" id="searchInput" class="form-control mb-4 transparent-input" placeholder="Search by Registration Number">
-
-      <!-- Battery Table -->
-      <div class="card transparent-card">
-        <h3 class="mb-3">All Batteries</h3>
-        <div class="table-responsive">
-          <table class="table table-hover table-dark text-white" id="batteryTable">
-            <thead>
-              <tr>
-                <th>Biker Name</th><th>Phone</th><th>Reg Number</th><th>Battery</th><th>Type</th>
-                <th>Dealer</th><th>Days Since Warranty</th><th>Frame</th><th>Engine</th><th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Reg</th><th>Company</th><th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
 
 <script src="config.js"></script>
 <script src="script.js"></script>

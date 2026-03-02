@@ -1,124 +1,60 @@
-/* Body */
-body {
-  background: #fff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #00ffff;
-  min-height: 100vh;
-  padding: 20px;
+body{
+  margin:0;
+  font-family:Segoe UI;
+  background:linear-gradient(135deg,#ffffff,#ffdddd);
 }
 
-/* Container */
-.container {
-  max-width: 1200px;
-  margin: auto;
+.card{
+  max-width:400px;
+  margin:80px auto;
+  padding:30px;
+  background:white;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  animation:fade 0.4s ease;
 }
 
-/* Cards */
-.card {
-  background: #fff;
-  border: 2px solid #ff0000;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 4px 15px rgba(255,0,0,0.2);
+.hidden{display:none;}
+
+input,select,button{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
 }
 
-/* Headings */
-h1, h3 {
-  color: #ff0000;
-  text-align: center;
+button{
+  background:#c40000;
+  color:white;
+  border:none;
+  cursor:pointer;
+  transition:0.3s;
 }
 
-/* Inputs */
-.form-control, .form-select {
-  border: 1px solid #ff0000;
-  border-radius: 8px;
-  padding: 10px;
-  color: #00ffff;
-  transition: 0.3s;
+button:hover{
+  background:#ff0000;
 }
 
-.form-control:focus, .form-select:focus {
-  border-color: #ff0000;
-  box-shadow: 0 0 8px rgba(255,0,0,0.4);
+table{
+  width:90%;
+  margin:30px auto;
+  border-collapse:collapse;
+  background:white;
+  box-shadow:0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* Buttons */
-.btn-primary {
-  background-color: #ff0000;
-  border: none;
-  color: #fff;
-  transition: 0.3s;
+th,td{
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  text-align:center;
 }
 
-.btn-primary:hover {
-  background-color: #cc0000;
+tr:hover{
+  background:#ffe5e5;
 }
 
-.btn-danger {
-  background-color: #ff0000;
-  border: none;
-  color: #fff;
-  transition: 0.3s;
-}
-
-.btn-danger:hover {
-  background-color: #cc0000;
-}
-
-/* Table */
-.table {
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.table th, .table td {
-  border-top: 1px solid #ff0000;
-  padding: 10px;
-  text-align: center;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(255,0,0,0.05);
-}
-
-/* Search Input */
-#searchInput {
-  border: 2px solid #ff0000;
-  border-radius: 10px;
-  padding: 10px;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-/* Login */
-#loginDiv {
-  max-width: 400px;
-  margin: 50px auto;
-  border: 2px solid #ff0000;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(255,0,0,0.2);
-}
-
-#loginDiv input {
-  margin-bottom: 15px;
-  border: 1px solid #ff0000;
-  border-radius: 8px;
-  padding: 10px;
-}
-
-#loginDiv button {
-  background-color: #ff0000;
-  color: #fff;
-  border: none;
-}
-
-#loginDiv button:hover {
-  background-color: #cc0000;
-}
-
-/* Hide manager by default */
-#managerDiv {
-  display: none;
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
 }
