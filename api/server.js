@@ -9,7 +9,7 @@ app.use(express.json());
 
 /* ================= DATABASE ================= */
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL1,
   ssl: process.env.VERCEL ? { rejectUnauthorized: false } : false
 });
 
